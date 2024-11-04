@@ -1,0 +1,42 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "CustomerGrpc";
+
+service CustomerServiceProto {
+    rpc CreateCustomerAsync (CreateCustomerRequest) returns (CustomerResponse);
+    rpc GetCustomerAsync (GetCustomerRequest) returns (CustomerResponse);
+    rpc UpdateCustomerAsync (UpdateCustomerRequest) returns (CustomerResponse);
+    rpc DeleteCustomerAsync (DeleteCustomerRequest) returns (DeleteCustomerResponse);
+}
+
+message CreateCustomerRequest {
+    string name = 1;
+    string document = 2;
+    string document_type = 3;
+}
+
+message GetCustomerRequest {
+    string id = 1;
+}
+
+message UpdateCustomerRequest {
+    string id = 1;
+    string name = 2;
+    string document = 3;
+    string document_type = 4;
+}
+
+message DeleteCustomerRequest {
+    string id = 1;
+}
+
+message CustomerResponse {
+    string id = 1;
+    string name = 2;
+    string document = 3;
+    string document_type = 4;
+}
+
+message DeleteCustomerResponse {
+    bool success = 1;
+}
