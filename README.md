@@ -3,7 +3,7 @@ Using in a Docker-compose orchestration:
 
 - Mapster
 - Serilog
-- RestApi integration with GrpcApi
+- RestApi integration with gRPCApi
 - Kafika
 - Redis
 - Mongo
