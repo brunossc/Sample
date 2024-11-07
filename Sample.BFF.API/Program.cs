@@ -1,6 +1,7 @@
 using CustomerGrpc;
 using Elasticsearch.Net;
 using Sample.BFF.API.Services;
+using Sample.SideCar.Monitoring;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
@@ -13,28 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-var uri = new Uri("http://elasticsearch:9200");
-var connectionConfiguration = new ConnectionConfiguration(uri)
-            .RequestTimeout(TimeSpan.FromSeconds(10));
-
-var transport = new Transport<IConnectionConfigurationValues>(connectionConfiguration);
-
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(uri)
-    {
-        ModifyConnectionSettings = conn => connectionConfiguration,
-        AutoRegisterTemplate = true,
-        IndexFormat = "BFF-{0:yyyy.MM.dd}"
-    })
-    .CreateLogger();
-
-builder.Host.UseSerilog();
-
-Log.Information("Teste Elasticsearch!");
-
+builder.AddSerilogWithElastic("BFF", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 builder.Services.AddGrpcClient<CustomerServiceProto.CustomerServiceProtoClient>(options =>
 {

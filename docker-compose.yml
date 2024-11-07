@@ -6,6 +6,7 @@ services:
       dockerfile: Sample.BFF.API/Dockerfile
     depends_on:
       - grpcservice
+      - kibana
       - elasticsearch  
     ports:
       - "5000:8080"
@@ -22,6 +23,7 @@ services:
       - redis
       - kafka
       - elasticsearch
+      - kibana
     ports:
       - "5001:8080"
     networks:
@@ -37,6 +39,7 @@ services:
       - mongo
       - elasticsearch
       - grpcservice
+      - kibana 
     ports:
       - "5002:8080"
     networks:
@@ -88,7 +91,7 @@ services:
     container_name: elasticsearch
     environment:
       discovery.type: single-node
-      ES_JAVA_OPTS: -Xms1g -Xmx1g
+      ES_JAVA_OPTS: -Xms2g -Xmx2g
       xpack.security.enabled: false
       xpack.security.enrollment.enabled: false
     ports:

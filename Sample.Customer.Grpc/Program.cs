@@ -1,36 +1,14 @@
 using Confluent.Kafka;
-using Elasticsearch.Net;
 using MongoDB.Driver;
+using Sample.SideCar.Monitoring;
 using Serilog;
-using Serilog.Sinks.Elasticsearch;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
-
-
-var uri = new Uri("http://elasticsearch:9200");
-var connectionConfiguration = new ConnectionConfiguration(uri)
-            .RequestTimeout(TimeSpan.FromSeconds(10));
-
-var transport = new Transport<IConnectionConfigurationValues>(connectionConfiguration);
-
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(uri)
-    {
-        ModifyConnectionSettings = conn => connectionConfiguration,
-        AutoRegisterTemplate = true,
-        IndexFormat = "Customer-{0:yyyy.MM.dd}"
-    })
-    .CreateLogger();
-
-builder.Host.UseSerilog();
-
-Log.Information("Teste Elasticsearch!");
+builder.AddSerilogWithElastic("Customer", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 builder.Services.AddSingleton<IMongoClient, MongoClient>(s =>
     new MongoClient(builder.Configuration.GetConnectionString("MongoDB")));
